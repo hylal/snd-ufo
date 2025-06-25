@@ -104,7 +104,7 @@ This indicator is licensed under the [Mozilla Public License 2.0](https://www.mo
 ## ✍️ Author
 
 **Hilaludin Wahid**  
-🔗 [LinkedIn]([#](https://www.linkedin.com/in/hilaludinwahid/)) | 🌐 [hilal.wahanadigita.com](https://hilal.wahanadigita.com)
+🔗 [LinkedIn]([#](https://www.linkedin.com/in/hilaludinwahid/)) | 🌐 [hilal.wahanadigital.com](https://hilal.wahanadigital.com)
 
 ---
 
