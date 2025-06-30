@@ -18,7 +18,7 @@ Pine Script v5 TradingView indicator to detect **RBR (Rally-Base-Rally)** and **
 
 ---
 ## $$ PAIRS
-. EURUSD  
+1. EURUSD  
 2. GBPUSD  
 3. USDJPY  
 4. AUDUSD  
