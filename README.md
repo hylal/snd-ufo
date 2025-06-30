@@ -43,7 +43,7 @@ Pine Script v5 TradingView indicator to detect **RBR (Rally-Base-Rally)** and **
 23. AUDCAD  
 24. AUDCHF  
 25. AUDNZD  
-26. CADCHF  
+26. CADCHF
 27. NZDCAD 
 28. NZDCHF
 
