@@ -1,0 +1,512 @@
+// This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// ©Hilaludin Wahid
+//@version=6
+indicator("Metode SnD v2", overlay = true, max_lines_count = 500, max_boxes_count = 500, max_labels_count = 30)
+
+// ======== EXPONENTIAL MOVING AVERAGE =========
+_emaHeader = input.bool(true, title = "=== EXPONENTIAL MOVING AVERAGE ===", inline = "header", tooltip = "Bagian EMA Settings")
+
+ma1Period = input.int(20, title = "EMA1 & TF", inline = "ema1")
+ma1TF = input.timeframe("", title = "", inline = "ema1")
+ma2Period = input.int(50, title = "EMA2 & TF", inline = "ema2")
+ma2TF = input.timeframe("", title = "", inline = "ema2")
+ma3Period = input.int(100, title = "EMA3 & TF", inline = "ema3")
+ma3TF = input.timeframe("", title = "", inline = "ema3")
+ma4Period = input.int(200, title = "EMA4 & TF", inline = "ema4")
+ma4TF = input.timeframe("", title = "", inline = "ema4")
+ma5Period = input.int(9, title = "EMA5 & TF", inline = "ema5")
+ma5TF = input.timeframe("D", title = "", inline = "ema5")
+
+tf_ema(src, len, tf) => request.security(syminfo.tickerid, tf, ta.ema(src, len))
+ema1 = tf_ema(close, ma1Period, ma1TF)
+ema2 = tf_ema(close, ma2Period, ma2TF)
+ema3 = tf_ema(close, ma3Period, ma3TF)
+ema4 = tf_ema(close, ma4Period, ma4TF)
+ema5 = tf_ema(close, ma5Period, ma5TF)
+
+plot(ema1, color = color.red, title = "EMA 20")
+plot(ema2, color = color.orange, title = "EMA 50")
+plot(ema3, color = color.blue, title = "EMA 100")
+plot(ema4, color = color.green, title = "EMA 200")
+plot(ema5, color = color.fuchsia, title = "EMA 9 HTF")
+
+// ======== SUPPLY AND DEMAND =========
+masukan = input.float(0.5, title = 'Calibration Zone', minval = 0.0, maxval = 1.0, group = "=== SUPPLY AND DEMAND ===")
+bodyrange = math.abs(open - close) / math.abs(high - low)
+base = bodyrange <= masukan
+legout = bodyrange > masukan
+hijau = open < close
+merah = open > close
+R = legout and hijau
+D = legout and merah
+B = base
+
+RBR = R[3] and B[2] and R[1]
+RBBR = R[4] and B[3] and B[2] and R[1]
+RBBBR = R[5] and B[4] and B[3] and B[2] and R[1]
+RBBBBR = R[6] and B[5] and B[4] and B[3] and B[2] and R[1]
+RBBBBBR = R[7] and B[6] and B[5] and B[4] and B[3] and B[2] and R[1]
+RBBBBBBR = R[8] and B[7] and B[6] and B[5] and B[4] and B[3] and B[2] and R[1]
+
+RBRH = ta.highest(high[2], 2)
+RBBRH = ta.highest(high[2], 3)
+RBBBRH = ta.highest(high[2], 4)
+RBBBBRH = ta.highest(high[2], 5)
+RBBBBBRH = ta.highest(high[2], 6)
+RBBBBBBRH = ta.highest(high[2], 7)
+RBRL = ta.lowest(low[1], 2)
+RBBRL = ta.lowest(low[1], 3)
+RBBBRL = ta.lowest(low[1], 4)
+RBBBBRL = ta.lowest(low[1], 5)
+RBBBBBRL = ta.lowest(low[1], 6)
+RBBBBBBRL = ta.lowest(low[1], 7)
+
+rbr1 = array.new_float(2)
+array.set(rbr1, 0, open[2])
+array.set(rbr1, 1, close[2])
+RBRT = array.max(rbr1)
+
+rbr2 = array.new_float(4)
+array.set(rbr2, 0, open[2])
+array.set(rbr2, 1, close[2])
+array.set(rbr2, 2, open[3])
+array.set(rbr2, 3, close[3])
+RBBRT = array.max(rbr2)
+
+rbr3 = array.new_float(6)
+array.set(rbr3, 0, open[2])
+array.set(rbr3, 1, close[2])
+array.set(rbr3, 2, open[3])
+array.set(rbr3, 3, close[3])
+array.set(rbr3, 4, open[4])
+array.set(rbr3, 5, close[4])
+RBBBRT = array.max(rbr3)
+
+rbr4 = array.new_float(8)
+array.set(rbr4, 0, open[2])
+array.set(rbr4, 1, close[2])
+array.set(rbr4, 2, open[3])
+array.set(rbr4, 3, close[3])
+array.set(rbr4, 4, open[4])
+array.set(rbr4, 5, close[4])
+array.set(rbr4, 6, open[5])
+array.set(rbr4, 7, close[5])
+RBBBBRT = array.max(rbr4)
+
+rbr5 = array.new_float(10)
+array.set(rbr5, 0, open[2])
+array.set(rbr5, 1, close[2])
+array.set(rbr5, 2, open[3])
+array.set(rbr5, 3, close[3])
+array.set(rbr5, 4, open[4])
+array.set(rbr5, 5, close[4])
+array.set(rbr5, 6, open[5])
+array.set(rbr5, 7, close[5])
+array.set(rbr5, 8, open[6])
+array.set(rbr5, 9, close[6])
+RBBBBBRT = array.max(rbr5)
+
+rbr6 = array.new_float(12)
+array.set(rbr6, 0, open[2])
+array.set(rbr6, 1, close[2])
+array.set(rbr6, 2, open[3])
+array.set(rbr6, 3, close[3])
+array.set(rbr6, 4, open[4])
+array.set(rbr6, 5, close[4])
+array.set(rbr6, 6, open[5])
+array.set(rbr6, 7, close[5])
+array.set(rbr6, 8, open[6])
+array.set(rbr6, 9, close[6])
+array.set(rbr6, 10, open[7])
+array.set(rbr6, 11, close[7])
+RBBBBBBRT = array.max(rbr6)
+
+DBR = D[3] and B[2] and R[1]
+DBBR = D[4] and B[3] and B[2] and R[1]
+DBBBR = D[5] and B[4] and B[3] and B[2] and R[1]
+DBBBBR = D[6] and B[5] and B[4] and B[3] and B[2] and R[1]
+DBBBBBR = D[7] and B[6] and B[5] and B[4] and B[3] and B[2] and R[1]
+DBBBBBBR = D[8] and B[7] and B[6] and B[5] and B[4] and B[3] and B[2] and R[1]
+
+DBRH = ta.highest(high[2], 1)
+DBBRH = ta.highest(high[2], 2)
+DBBBRH = ta.highest(high[2], 3)
+DBBBBRH = ta.highest(high[2], 4)
+DBBBBBRH = ta.highest(high[2], 5)
+DBBBBBBRH = ta.highest(high[2], 6)
+DBRL = ta.lowest(low[1], 3)
+DBBRL = ta.lowest(low[1], 4)
+DBBBRL = ta.lowest(low[1], 5)
+DBBBBRL = ta.lowest(low[1], 6)
+DBBBBBRL = ta.lowest(low[1], 7)
+DBBBBBBRL = ta.lowest(low[1], 8)
+
+dbr1 = array.new_float(2)
+array.set(dbr1, 0, open[2])
+array.set(dbr1, 1, close[2])
+DBRT = array.max(dbr1)
+
+dbr2 = array.new_float(4)
+array.set(dbr2, 0, open[2])
+array.set(dbr2, 1, close[2])
+array.set(dbr2, 2, open[3])
+array.set(dbr2, 3, close[3])
+DBBRT = array.max(dbr2)
+
+dbr3 = array.new_float(6)
+array.set(dbr3, 0, open[2])
+array.set(dbr3, 1, close[2])
+array.set(dbr3, 2, open[3])
+array.set(dbr3, 3, close[3])
+array.set(dbr3, 4, open[4])
+array.set(dbr3, 5, close[4])
+DBBBRT = array.max(dbr3)
+
+dbr4 = array.new_float(8)
+array.set(dbr4, 0, open[2])
+array.set(dbr4, 1, close[2])
+array.set(dbr4, 2, open[3])
+array.set(dbr4, 3, close[3])
+array.set(dbr4, 4, open[4])
+array.set(dbr4, 5, close[4])
+array.set(dbr4, 6, open[5])
+array.set(dbr4, 7, close[5])
+DBBBBRT = array.max(dbr4)
+
+dbr5 = array.new_float(10)
+array.set(dbr5, 0, open[2])
+array.set(dbr5, 1, close[2])
+array.set(dbr5, 2, open[3])
+array.set(dbr5, 3, close[3])
+array.set(dbr5, 4, open[4])
+array.set(dbr5, 5, close[4])
+array.set(dbr5, 6, open[5])
+array.set(dbr5, 7, close[5])
+array.set(dbr5, 8, open[6])
+array.set(dbr5, 9, close[6])
+DBBBBBRT = array.max(dbr5)
+
+dbr6 = array.new_float(12)
+array.set(dbr6, 0, open[2])
+array.set(dbr6, 1, close[2])
+array.set(dbr6, 2, open[3])
+array.set(dbr6, 3, close[3])
+array.set(dbr6, 4, open[4])
+array.set(dbr6, 5, close[4])
+array.set(dbr6, 6, open[5])
+array.set(dbr6, 7, close[5])
+array.set(dbr6, 8, open[6])
+array.set(dbr6, 9, close[6])
+array.set(dbr6, 10, open[7])
+array.set(dbr6, 11, close[7])
+DBBBBBBRT = array.max(dbr6)
+
+DBD = D[3] and B[2] and D[1]
+DBBD = D[4] and B[3] and B[2] and D[1]
+DBBBD = D[5] and B[4] and B[3] and B[2] and D[1]
+DBBBBD = D[6] and B[5] and B[4] and B[3] and B[2] and D[1]
+DBBBBBD = D[7] and B[6] and B[5] and B[4] and B[3] and B[2] and D[1]
+DBBBBBBD = D[8] and B[7] and B[6] and B[5] and B[4] and B[3] and B[2] and D[1]
+
+DBDH = ta.highest(high[1], 2)
+DBBDH = ta.highest(high[1], 3)
+DBBBDH = ta.highest(high[1], 4)
+DBBBBDH = ta.highest(high[1], 5)
+DBBBBBDH = ta.highest(high[1], 6)
+DBBBBBBDH = ta.highest(high[1], 7)
+DBDL = ta.lowest(low[2], 2)
+DBBDL = ta.lowest(low[2], 3)
+DBBBDL = ta.lowest(low[2], 4)
+DBBBBDL = ta.lowest(low[2], 5)
+DBBBBBDL = ta.lowest(low[2], 6)
+DBBBBBBDL = ta.lowest(low[2], 7)
+
+dbd1 = array.new_float(2)
+array.set(dbd1, 0, open[2])
+array.set(dbd1, 1, close[2])
+DBDT = array.min(dbd1)
+
+dbd2 = array.new_float(4)
+array.set(dbd2, 0, open[2])
+array.set(dbd2, 1, close[2])
+array.set(dbd2, 2, open[3])
+array.set(dbd2, 3, close[3])
+DBBDT = array.min(dbd2)
+
+dbd3 = array.new_float(6)
+array.set(dbd3, 0, open[2])
+array.set(dbd3, 1, close[2])
+array.set(dbd3, 2, open[3])
+array.set(dbd3, 3, close[3])
+array.set(dbd3, 4, open[4])
+array.set(dbd3, 5, close[4])
+DBBBDT = array.min(dbd3)
+
+dbd4 = array.new_float(8)
+array.set(dbd4, 0, open[2])
+array.set(dbd4, 1, close[2])
+array.set(dbd4, 2, open[3])
+array.set(dbd4, 3, close[3])
+array.set(dbd4, 4, open[4])
+array.set(dbd4, 5, close[4])
+array.set(dbd4, 6, open[5])
+array.set(dbd4, 7, close[5])
+DBBBBDT = array.min(dbd4)
+
+dbd5 = array.new_float(10)
+array.set(dbd5, 0, open[2])
+array.set(dbd5, 1, close[2])
+array.set(dbd5, 2, open[3])
+array.set(dbd5, 3, close[3])
+array.set(dbd5, 4, open[4])
+array.set(dbd5, 5, close[4])
+array.set(dbd5, 6, open[5])
+array.set(dbd5, 7, close[5])
+array.set(dbd5, 8, open[6])
+array.set(dbd5, 9, close[6])
+DBBBBBDT = array.min(dbd5)
+
+dbd6 = array.new_float(12)
+array.set(dbd6, 0, open[2])
+array.set(dbd6, 1, close[2])
+array.set(dbd6, 2, open[3])
+array.set(dbd6, 3, close[3])
+array.set(dbd6, 4, open[4])
+array.set(dbd6, 5, close[4])
+array.set(dbd6, 6, open[5])
+array.set(dbd6, 7, close[5])
+array.set(dbd6, 8, open[6])
+array.set(dbd6, 9, close[6])
+array.set(dbd6, 10, open[7])
+array.set(dbd6, 11, close[7])
+DBBBBBBDT = array.min(dbd6)
+
+RBD = R[3] and B[2] and D[1]
+RBBD = R[4] and B[3] and B[2] and D[1]
+RBBBD = R[5] and B[4] and B[3] and B[2] and D[1]
+RBBBBD = R[6] and B[5] and B[4] and B[3] and B[2] and D[1]
+RBBBBBD = R[7] and B[6] and B[5] and B[4] and B[3] and B[2] and D[1]
+RBBBBBBD = R[8] and B[7] and B[6] and B[5] and B[4] and B[3] and B[2] and D[1]
+
+RBDH = ta.highest(high[1], 3)
+RBBDH = ta.highest(high[1], 4)
+RBBBDH = ta.highest(high[1], 5)
+RBBBBDH = ta.highest(high[1], 6)
+RBBBBBDH = ta.highest(high[1], 7)
+RBBBBBBDH = ta.highest(high[1], 8)
+
+RBDL = ta.lowest(low[2], 1)
+RBBDL = ta.lowest(low[2], 2)
+RBBBDL = ta.lowest(low[2], 3)
+RBBBBDL = ta.lowest(low[2], 4)
+RBBBBBDL = ta.lowest(low[2], 5)
+RBBBBBBDL = ta.lowest(low[2], 6)
+
+rbd1 = array.new_float(2)
+array.set(rbd1, 0, open[2])
+array.set(rbd1, 1, close[2])
+RBDT = array.min(rbd1)
+
+rbd2 = array.new_float(4)
+array.set(rbd2, 0, open[2])
+array.set(rbd2, 1, close[2])
+array.set(rbd2, 2, open[3])
+array.set(rbd2, 3, close[3])
+RBBDT = array.min(rbd2)
+
+rbd3 = array.new_float(6)
+array.set(rbd3, 0, open[2])
+array.set(rbd3, 1, close[2])
+array.set(rbd3, 2, open[3])
+array.set(rbd3, 3, close[3])
+array.set(rbd3, 4, open[4])
+array.set(rbd3, 5, close[4])
+RBBBDT = array.min(rbd3)
+
+rbd4 = array.new_float(8)
+array.set(rbd4, 0, open[2])
+array.set(rbd4, 1, close[2])
+array.set(rbd4, 2, open[3])
+array.set(rbd4, 3, close[3])
+array.set(rbd4, 4, open[4])
+array.set(rbd4, 5, close[4])
+array.set(rbd4, 6, open[5])
+array.set(rbd4, 7, close[5])
+RBBBBDT = array.min(rbd4)
+
+rbd5 = array.new_float(10)
+array.set(rbd5, 0, open[2])
+array.set(rbd5, 1, close[2])
+array.set(rbd5, 2, open[3])
+array.set(rbd5, 3, close[3])
+array.set(rbd5, 4, open[4])
+array.set(rbd5, 5, close[4])
+array.set(rbd5, 6, open[5])
+array.set(rbd5, 7, close[5])
+array.set(rbd5, 8, open[6])
+array.set(rbd5, 9, close[6])
+RBBBBBDT = array.min(rbd5)
+
+rbd6 = array.new_float(12)
+array.set(rbd6, 0, open[2])
+array.set(rbd6, 1, close[2])
+array.set(rbd6, 2, open[3])
+array.set(rbd6, 3, close[3])
+array.set(rbd6, 4, open[4])
+array.set(rbd6, 5, close[4])
+array.set(rbd6, 6, open[5])
+array.set(rbd6, 7, close[5])
+array.set(rbd6, 8, open[6])
+array.set(rbd6, 9, close[6])
+array.set(rbd6, 10, open[7])
+array.set(rbd6, 11, close[7])
+RBBBBBBDT = array.min(rbd6)
+
+showpivotzone = input(true, title = 'Show Pivot Zone', group = "Supply and Demand")
+exten = extend.right
+warna2 = input.color(color.rgb(249, 157, 167, 50), title = 'Fresh Supply Zone', group = "Supply and Demand")
+nonfreshsell = input.color(color.rgb(252, 212, 216, 50), title = 'Supply Touch Zone', group = "Supply and Demand")
+bor2 = input.color(color.black, title = 'Supply Border', group = "Supply and Demand")
+
+warna = input.color(color.rgb(121, 198, 184, 50), title = 'Fresh Demand Zone', group = "Supply and Demand")
+nonfreshbuy = input.color(color.rgb(203, 233, 228, 50), title = 'Demand Touch Zone', group = "Supply and Demand")
+bor = input.color(color.black, title = 'Demand Border', group = "Supply and Demand")
+
+labtext = color.new(color.white, 100)
+border = input.int(1, title = 'Border ', options = [1, 2, 3], group = "Supply and Demand")
+borderstyle = line.style_solid
+inbor = input.string('Solid', title = 'Border Style', options = ['Solid', 'Dotted', 'Dashed'], group = "Supply and Demand")
+if inbor == 'Solid'
+    borderstyle := line.style_solid
+    borderstyle
+if inbor == 'Dotted'
+    borderstyle := line.style_dotted
+    borderstyle
+if inbor == 'Dashed'
+    borderstyle := line.style_dashed
+    borderstyle
+
+if RBR
+    b1 = box.new(bar_index[3], RBRH, bar_index[3], RBRL, bgcolor = warna, border_style = borderstyle, border_color = bor, border_width = border, extend = exten)
+    l1 = label.new(bar_index + 2, RBRT, color = color.green, style = label.style_none, size = size.tiny, text = 'demand', textcolor = labtext)
+    l1
+if RBBR
+    b1 = box.new(bar_index[4], RBBRH, bar_index[4], RBBRL, bgcolor = warna, border_style = borderstyle, border_color = bor, border_width = border, extend = exten)
+    l1 = label.new(bar_index + 2, RBBRT, color = color.green, style = label.style_none, size = size.tiny, text = 'demand', textcolor = labtext)
+    l1
+if RBBBR
+    b1 = box.new(bar_index[5], RBBBRH, bar_index[5], RBBBRL, bgcolor = warna, border_style = borderstyle, border_color = bor, border_width = border, extend = exten)
+    l1 = label.new(bar_index + 2, RBBBRT, color = color.green, style = label.style_none, size = size.tiny, text = 'demand', textcolor = labtext)
+    l1
+if RBBBBR
+    b1 = box.new(bar_index[6], RBBBBRH, bar_index[6], RBBBBRL, bgcolor = warna, border_style = borderstyle, border_color = bor, border_width = border, extend = exten)
+    l1 = label.new(bar_index + 2, RBBBBRT, color = color.green, style = label.style_none, size = size.tiny, text = 'demand', textcolor = labtext)
+    l1
+if RBBBBBR
+    b1 = box.new(bar_index[7], RBBBBBRH, bar_index[7], RBBBBBRL, bgcolor = warna, border_style = borderstyle, border_color = bor, border_width = border, extend = exten)
+    l1 = label.new(bar_index + 2, RBBBBBRT, color = color.green, style = label.style_none, size = size.tiny, text = 'demand', textcolor = labtext)
+    l1
+if RBBBBBBR
+    b1 = box.new(bar_index[8], RBBBBBBRH, bar_index[8], RBBBBBBRL, bgcolor = warna, border_style = borderstyle, border_color = bor, border_width = border, extend = exten)
+    l1 = label.new(bar_index + 2, RBBBBBBRT, color = color.green, style = label.style_none, size = size.tiny, text = 'demand', textcolor = labtext)
+    l1
+
+if DBR and showpivotzone == true
+    b1 = box.new(bar_index[3], DBRH, bar_index[3], DBRL, bgcolor = warna, border_style = borderstyle, border_color = bor, border_width = border, extend = exten)
+    l1 = label.new(bar_index + 2, DBRT, color = color.green, style = label.style_none, size = size.tiny, text = 'demand', textcolor = labtext)
+    l1
+if DBBR and showpivotzone == true
+    b1 = box.new(bar_index[4], DBBRH, bar_index[4], DBBRL, bgcolor = warna, border_style = borderstyle, border_color = bor, border_width = border, extend = exten)
+    l1 = label.new(bar_index + 2, DBBRT, color = color.green, style = label.style_none, size = size.tiny, text = 'demand', textcolor = labtext)
+    l1
+if DBBBR and showpivotzone == true
+    b1 = box.new(bar_index[5], DBBBRH, bar_index[5], DBBBRL, bgcolor = warna, border_style = borderstyle, border_color = bor, border_width = border, extend = exten)
+    l1 = label.new(bar_index + 2, DBBBRT, color = color.green, style = label.style_none, size = size.tiny, text = 'demand', textcolor = labtext)
+    l1
+if DBBBBR and showpivotzone == true
+    b1 = box.new(bar_index[6], DBBBBRH, bar_index[6], DBBBBRL, bgcolor = warna, border_style = borderstyle, border_color = bor, border_width = border, extend = exten)
+    l1 = label.new(bar_index + 2, DBBBBRT, color = color.green, style = label.style_none, size = size.tiny, text = 'demand', textcolor = labtext)
+    l1
+if DBBBBBR and showpivotzone == true
+    b1 = box.new(bar_index[7], DBBBBBRH, bar_index[7], DBBBBBRL, bgcolor = warna, border_style = borderstyle, border_color = bor, border_width = border, extend = exten)
+    l1 = label.new(bar_index + 2, DBBBBBRT, color = color.green, style = label.style_none, size = size.tiny, text = 'demand', textcolor = labtext)
+    l1
+if DBBBBBBR and showpivotzone == true
+    b1 = box.new(bar_index[8], DBBBBBBRH, bar_index[8], DBBBBBBRL, bgcolor = warna, border_style = borderstyle, border_color = bor, border_width = border, extend = exten)
+    l1 = label.new(bar_index + 2, DBBBBBBRT, color = color.green, style = label.style_none, size = size.tiny, text = 'demand', textcolor = labtext)
+    l1
+
+if DBD
+    b1 = box.new(bar_index[3], DBDL, bar_index[3], DBDH, bgcolor = warna2, border_style = borderstyle, border_color = bor2, border_width = border, extend = exten)
+    l1 = label.new(bar_index + 2, DBDT, color = color.red, style = label.style_none, size = size.tiny, text = 'supply', textcolor = labtext)
+    l1
+if DBBD
+    b1 = box.new(bar_index[4], DBBDL, bar_index[4], DBBDH, bgcolor = warna2, border_style = borderstyle, border_color = bor2, border_width = border, extend = exten)
+    l1 = label.new(bar_index + 2, DBBDT, color = color.red, style = label.style_none, size = size.tiny, text = 'supply', textcolor = labtext)
+    l1
+if DBBBD
+    b1 = box.new(bar_index[5], DBBBDL, bar_index[5], DBBBDH, bgcolor = warna2, border_style = borderstyle, border_color = bor2, border_width = border, extend = exten)
+    l1 = label.new(bar_index + 2, DBBBDT, color = color.red, style = label.style_none, size = size.tiny, text = 'supply', textcolor = labtext)
+    l1
+if DBBBBD
+    b1 = box.new(bar_index[6], DBBBBDL, bar_index[6], DBBBBDH, bgcolor = warna2, border_style = borderstyle, border_color = bor2, border_width = border, extend = exten)
+    l1 = label.new(bar_index + 2, DBBBBDT, color = color.red, style = label.style_none, size = size.tiny, text = 'supply', textcolor = labtext)
+    l1
+if DBBBBBD
+    b1 = box.new(bar_index[7], DBBBBBDL, bar_index[7], DBBBBBDH, bgcolor = warna2, border_style = borderstyle, border_color = bor2, border_width = border, extend = exten)
+    l1 = label.new(bar_index + 2, DBBBBBDT, color = color.red, style = label.style_none, size = size.tiny, text = 'supply', textcolor = labtext)
+    l1
+if DBBBBBBD
+    b1 = box.new(bar_index[8], DBBBBBBDL, bar_index[8], DBBBBBBDH, bgcolor = warna2, border_style = borderstyle, border_color = bor2, border_width = border, extend = exten)
+    l1 = label.new(bar_index + 2, DBBBBBBDT, color = color.red, style = label.style_none, size = size.tiny, text = 'supply', textcolor = labtext)
+    l1
+
+if RBD and showpivotzone == true
+    b1 = box.new(bar_index[3], RBDL, bar_index[3], RBDH, bgcolor = warna2, border_style = borderstyle, border_color = bor2, border_width = border, extend = exten)
+    l1 = label.new(bar_index + 2, RBDT, color = color.red, style = label.style_none, size = size.tiny, text = 'supply', textcolor = labtext)
+    l1
+if RBBD and showpivotzone == true
+    b1 = box.new(bar_index[4], RBBDL, bar_index[4], RBBDH, bgcolor = warna2, border_style = borderstyle, border_color = bor2, border_width = border, extend = exten)
+    l1 = label.new(bar_index + 2, RBBDT, color = color.red, style = label.style_none, size = size.tiny, text = 'supply', textcolor = labtext)
+    l1
+if RBBBD and showpivotzone == true
+    b1 = box.new(bar_index[5], RBBBDL, bar_index[5], RBBBDH, bgcolor = warna2, border_style = borderstyle, border_color = bor2, border_width = border, extend = exten)
+    l1 = label.new(bar_index + 2, RBBBDT, color = color.red, style = label.style_none, size = size.tiny, text = 'supply', textcolor = labtext)
+    l1
+if RBBBBD and showpivotzone == true
+    b1 = box.new(bar_index[6], RBBBBDL, bar_index[6], RBBBBDH, bgcolor = warna2, border_style = borderstyle, border_color = bor2, border_width = border, extend = exten)
+    l1 = label.new(bar_index + 2, RBBBBDT, color = color.red, style = label.style_none, size = size.tiny, text = 'supply', textcolor = labtext)
+    l1
+if RBBBBBD and showpivotzone == true
+    b1 = box.new(bar_index[7], RBBBBBDL, bar_index[7], RBBBBBDH, bgcolor = warna2, border_style = borderstyle, border_color = bor2, border_width = border, extend = exten)
+    l1 = label.new(bar_index + 2, RBBBBBDT, color = color.red, style = label.style_none, size = size.tiny, text = 'supply', textcolor = labtext)
+    l1
+if RBBBBBBD and showpivotzone == true
+    b1 = box.new(bar_index[8], RBBBBBBDL, bar_index[8], RBBBBBBDH, bgcolor = warna2, border_style = borderstyle, border_color = bor2, border_width = border, extend = exten)
+    l1 = label.new(bar_index + 2, RBBBBBBDT, color = color.red, style = label.style_none, size = size.tiny, text = 'supply', textcolor = labtext)
+    l1
+
+deletebox = 'Middle Zone'
+
+BOX = array.size(box.all) - 1
+LABEL = array.size(label.all) - 1
+for i = 0 to BOX by 1
+    if array.size(box.all) > 0
+        currBox = array.get(box.all, BOX - i)
+        currLAB = array.get(label.all, LABEL - i)
+
+        if label.get_text(currLAB) == 'demand' and box.get_bottom(currBox) < box.get_top(currBox) and deletebox == 'Middle Zone'
+            if label.get_y(currLAB) > low
+                label.delete(currLAB)
+                box.delete(currBox)
+
+            if label.get_y(currLAB) < low and box.get_top(currBox) > low
+                box.set_bgcolor(currBox, nonfreshbuy)
+
+        if label.get_text(currLAB) == 'supply' and box.get_bottom(currBox) > box.get_top(currBox) and deletebox == 'Middle Zone'
+            if label.get_y(currLAB) < high
+                label.delete(currLAB)
+                box.delete(currBox)
+
+            if label.get_y(currLAB) > high and box.get_top(currBox) < high
+                box.set_bgcolor(currBox, nonfreshsell)
