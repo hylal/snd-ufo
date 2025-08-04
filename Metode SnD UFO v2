@@ -362,20 +362,20 @@ array.set(rbd6, 10, open[7])
 array.set(rbd6, 11, close[7])
 RBBBBBBDT = array.min(rbd6)
 
-showpivotzone = input(true, title = 'Show Pivot Zone', group = "Supply and Demand")
+showpivotzone = input(title = 'Show Pivot Zone', defval = true)
 exten = extend.right
-warna2 = input.color(color.rgb(249, 157, 167, 50), title = 'Fresh Supply Zone', group = "Supply and Demand")
-nonfreshsell = input.color(color.rgb(252, 212, 216, 50), title = 'Supply Touch Zone', group = "Supply and Demand")
-bor2 = input.color(color.black, title = 'Supply Border', group = "Supply and Demand")
+warna2 = input.color(color.rgb(249, 157, 167, 50), title = 'Fresh Supply Zone')
+nonfreshsell = input.color(color.rgb(252, 212, 216, 50), title = 'Supply Touch Zone')
+bor2 = input.color(color.black, title = 'Supply Border')
 
-warna = input.color(color.rgb(121, 198, 184, 50), title = 'Fresh Demand Zone', group = "Supply and Demand")
-nonfreshbuy = input.color(color.rgb(203, 233, 228, 50), title = 'Demand Touch Zone', group = "Supply and Demand")
-bor = input.color(color.black, title = 'Demand Border', group = "Supply and Demand")
+warna = input.color(color.rgb(121, 198, 184, 50), title = 'Fresh Demand Zone')
+nonfreshbuy = input.color(color.rgb(203, 233, 228, 50), title = 'Demand Touch Zone')
+bor = input.color(color.black, title = 'Demand Border')
 
 labtext = color.new(color.white, 100)
-border = input.int(1, title = 'Border ', options = [1, 2, 3], group = "Supply and Demand")
+border = input.int(1, title = 'Border ', options = [1, 2, 3])
 borderstyle = line.style_solid
-inbor = input.string('Solid', title = 'Border Style', options = ['Solid', 'Dotted', 'Dashed'], group = "Supply and Demand")
+inbor = input.string('Solid', title = 'Border Style', options = ['Solid', 'Dotted', 'Dashed'])
 if inbor == 'Solid'
     borderstyle := line.style_solid
     borderstyle
